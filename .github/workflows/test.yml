@@ -3,7 +3,7 @@ name: Frontend Tests
 on:
   push:
     branches:
-      - frontend
+      - frontend  # Se ejecuta solo en la rama "frontend"
 
 jobs:
   test:
@@ -18,11 +18,10 @@ jobs:
         with:
           node-version: 16
 
-      - name: Navigate to calculator-frontend folder
-        run: cd calculator-frontend
-
-      - name: Install dependencies
+      - name: Navigate to calculator-frontend folder and install dependencies
+        working-directory: calculator-frontend
         run: npm install
 
-      - name: Run tests
+      - name: Run calculator-frontend tests
+        working-directory: calculator-frontend
         run: npm test
