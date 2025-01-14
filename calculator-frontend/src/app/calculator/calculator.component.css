@@ -67,10 +67,10 @@ h1 {
   .buttons {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;  /* Ajusta el espacio entre los botones */
+    gap: 8px;
   }
   
-  /* Botones superiores (C y DELETE) */
+  /* Botones de arriba (Clear y DELETE) */
   .top-buttons {
     grid-column: span 4;
     display: flex;
