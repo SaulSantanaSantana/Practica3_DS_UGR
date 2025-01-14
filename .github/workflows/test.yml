@@ -3,7 +3,7 @@ name: Frontend Tests
 on:
   push:
     branches:
-      - frontend  # Se ejecuta solo en la rama "frontend"
+      - frontend
 
 jobs:
   test:
