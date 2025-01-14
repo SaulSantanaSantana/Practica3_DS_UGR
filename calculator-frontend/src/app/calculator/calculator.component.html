@@ -1,0 +1,23 @@
+<div class="title-container">
+    <h1>CALCULATOR</h1>
+  </div>
+<div class="calculator">
+  <div class="display">{{ operation }}</div>
+  <div class="buttons">
+    <div class="top-buttons">
+      <button (click)="onClearClick()" data-type="clear">C</button>
+      <button (click)="onDeleteClick()" data-type="delete">DELETE</button>
+    </div>
+    <div class="numbers">
+      <button *ngFor="let num of numbers" (click)="onNumberClick(num)" [attr.data-num]="num" data-type="number">
+        {{ num }}
+      </button>
+    </div>
+    <div class="operators">
+      <button *ngFor="let op of operators" (click)="onOperatorClick(op)" [attr.data-op]="op" data-type="operator">
+        {{ op }}
+      </button>
+      <button (click)="onEqualClick()" data-type="equals"> = </button>
+    </div>
+  </div>
+</div>

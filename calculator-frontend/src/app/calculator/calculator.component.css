@@ -1,0 +1,206 @@
+/* Estilo general del contenedor del título */
+.title-container {
+    display: flex;
+    justify-content: center;  
+    align-items: center;
+    height: 100px;           
+}
+  
+h1 {
+    font-size: 24px;
+    font-family: 'Roboto Mono', monospace;
+    color: #333;
+    margin-bottom: 15px;
+    position: relative;  
+    text-align: center;
+}
+  
+@keyframes blink {
+    50% {
+      opacity: 0;
+    }
+}
+
+  /* Estilo general de la calculadora */
+.calculator {
+    max-width: 80%;    
+    width: 27%;       
+    font-family: 'Roboto Mono', monospace;
+    margin: 20px auto; 
+    padding: 15px;
+    background-color: #9e9e9e;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Estilo de la pantalla de la calculadora */
+.display {
+  width: 100%;
+  height: 60px;  
+  background-color: #2f3030;
+  color: rgb(255, 255, 255);
+  font-size: 1.8em;  
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; 
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  text-align: right;
+  box-sizing: border-box;
+  position: relative; 
+}
+
+.display::after {
+  content: '|'; 
+  font-size: 1.4em; 
+  color: rgb(255, 255, 255); 
+  animation: blink 1s infinite step-end;
+  position: absolute;
+  right: 1px;
+}
+  
+  /* Contenedor de botones */
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;  /* Ajusta el espacio entre los botones */
+  }
+  
+  /* Botones superiores (C y DELETE) */
+  .top-buttons {
+    grid-column: span 4;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  /* Estilo de los botones */
+  button {
+    padding: 15px; 
+    margin: 1%;      
+    font-size: 1.3em;    
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  
+  button:hover {
+    background-color: #555;
+  }
+  
+  button:active {
+    background-color: #777;
+  }
+  
+  /* Botón clear */
+  button[data-type="clear"] {
+    background-color: #f39c12;
+  }
+  button[data-type="clear"]:hover {
+    background-color: #d88c11;
+  }
+  button[data-type="clear"]:active {
+    background-color: #ad700f;
+  }
+  
+  /* Botón delete */
+  button[data-type="delete"] {
+    background-color: #e74c3c;
+  }
+  button[data-type="delete"]:hover {
+    background-color: #a7382c;
+  }
+  button[data-type="delete"]:active {
+    background-color: #933227;
+  }
+  
+  /* Botones números */
+  .numbers {
+    grid-column: span 3;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  
+  button[data-type="number"] {
+    background-color: #333;
+  }
+  
+  button[data-type="number"]:hover {
+    background-color: #555;
+  }
+  
+  button[data-type="number"]:active {
+    background-color: #353434;
+  }
+  
+  /* Botones operadores */
+  .operators {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  button[data-type="operator"] {
+    background-color: #2ecc71;
+  }
+  
+  button[data-type="operator"]:hover {
+    background-color: #27ae60;
+  }
+  
+  button[data-type="operator"]:active {
+    background-color: #1c914d;
+  }
+  
+  /* Botón igual */
+  button[data-type="equals"] {
+    background-color: #3498db;
+  }
+  
+  button[data-type="equals"]:hover {
+    background-color: #2980b9;
+  }
+  
+  button[data-type="equals"]:active {
+    background-color: #235f87;
+  }
+  
+  @media (max-width: 480px) {
+    .calculator {
+      max-width: 90%;
+      padding: 10px;
+    }
+  
+    .display {
+      font-size: 1.5em;
+      height: 50px;     
+    }
+  
+    button {
+      padding: 12px; 
+      font-size: 1.2em;
+    }
+  
+    .numbers {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  
+    .operators {
+      flex-direction: row;
+      gap: 5px; 
+    }
+  }
+  
