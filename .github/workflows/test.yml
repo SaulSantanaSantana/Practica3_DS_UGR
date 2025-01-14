@@ -20,10 +20,13 @@ jobs:
           
       - name: Install Angular CLI globally
         run: npm install -g @angular/cli
-
-      - name: Navigate to calculator-frontend folder and install dependencies
+      
+      - name: Clean npm cache and reinstall dependencies
         working-directory: calculator-frontend
-        run: npm install
+        run: |
+          npm cache clean --force
+          rm -rf node_modules package-lock.json
+          npm install
 
       - name: Run calculator-frontend tests
         working-directory: calculator-frontend
