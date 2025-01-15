@@ -1,4 +1,4 @@
-name: Frontend Tests
+name: Tests
 
 on:
   push:
@@ -6,7 +6,9 @@ on:
       - frontend
 
 jobs:
-  test:
+  frontend:
+    name: Frontend Tests
+
     runs-on: ubuntu-latest
 
     steps:
@@ -17,16 +19,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.19.1
-          
+
       - name: Install Angular CLI globally
         run: npm install -g @angular/cli
-      
+
       - name: Clean npm cache and reinstall dependencies
         working-directory: calculator-frontend
         run: |
           npm cache clean --force
           rm -rf node_modules package-lock.json
           npm install
+
+      - name: Build Application
+        working-directory: calculator-frontend
+        run: ng build --configuration=production
 
       - name: Run calculator-frontend tests
         working-directory: calculator-frontend
