@@ -30,4 +30,4 @@ jobs:
 
       - name: Run calculator-frontend tests
         working-directory: calculator-frontend
-        run: ng test --watch=false
+        run: ng test --watch=false --browsers=ChromeHeadless
