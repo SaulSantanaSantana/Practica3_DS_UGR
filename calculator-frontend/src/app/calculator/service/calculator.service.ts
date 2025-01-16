@@ -51,6 +51,6 @@ export class CalculatorService {
   }
   getResult(operation: string): string {
     if (operation.includes('/0')) return 'NaN';
-    return (eval(operation) as number).toString();
+    return (eval(operation.replaceAll('x', '*')) as number).toString();
   }
 }
