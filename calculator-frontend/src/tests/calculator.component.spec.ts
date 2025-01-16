@@ -126,6 +126,13 @@ describe('CalculatorComponent', () => {
       expect(component.operation).toBe('');
     });
 
+    it('nothing should happen when DELETE is clicked and there is a NaN string on the display', () => {
+      component.operation = NaN;
+      deleteButton.click();
+      fixture.detectChanges();
+      expect(component.operation).toBe(NaN);
+    });
+
     it('should clear the operation when CLEAR is clicked', () => {
       component.operation = '5+3';
       const clearButton = htmlDOM.querySelector('button[data-type="clear"]');
@@ -189,10 +196,9 @@ describe('CalculatorComponent', () => {
       expect(display.textContent).toBe(`${operation}=${response}`);
     });
 
-    //TODO volver a poner cuando se haga llamada al servicio para no tener que mockear
+
     it('should handle division by 0', () => {
       component.operation = '30/0';
-      //calculatorService.getResult.and.returnValue(of(response));
       calculatorService.getResult.and.returnValue(NaN);
       equalsButton.click();
       fixture.detectChanges();
@@ -200,6 +206,10 @@ describe('CalculatorComponent', () => {
       expect(component.operation).toBe(NaN);
       expect(display.textContent).toBe(NaN);
     });
+
+
+
+
   });
 
 

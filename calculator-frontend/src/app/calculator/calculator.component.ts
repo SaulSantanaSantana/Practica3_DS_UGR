@@ -35,7 +35,7 @@ export class CalculatorComponent {
   }
 
   onDeleteClick(){
-    if(this.operation.length > 0){
+    if(this.operation.length > 0 && this.operation !== "NaN"){
       this.operation = this.operation.slice(0, this.operation.length - 1);     
     }
   }
