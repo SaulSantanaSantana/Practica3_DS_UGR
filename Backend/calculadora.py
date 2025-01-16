@@ -3,9 +3,9 @@ from flask_cors import CORS
 import math
 import os
 
-CORS(app)
-
 app = Flask(__name__)
+
+CORS(app)
 
 # Función para verificar si un número es primo
 def is_prime(n):
