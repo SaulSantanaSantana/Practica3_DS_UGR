@@ -16,17 +16,15 @@ describe('CalculatorComponent', () => {
   let NaN : string = "NaN";
 
   beforeEach(async () => { 
-    calculatorService = jasmine.createSpyObj('CalculatorService', ['getResult']);
+    const calculatorServiceSpy = jasmine.createSpyObj('CalculatorService', ['calculate']);
 
     await TestBed.configureTestingModule({
       imports: [CalculatorComponent],
-      providers: [
-        { provide: CalculatorService, useValue: calculatorService }//, // Mock del servicio
-        //SprovideHttpClient(),
-      ],
+      providers: [{ provide: CalculatorService, useValue: calculatorServiceSpy }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CalculatorComponent);
+    calculatorService = TestBed.inject(CalculatorService) as jasmine.SpyObj<CalculatorService>;
     component = fixture.componentInstance;
     fixture.detectChanges();
     htmlDOM = fixture.nativeElement;
@@ -51,7 +49,7 @@ describe('CalculatorComponent', () => {
 
     it('should render the calculator buttons', () => {
       const compiled = htmlDOM as HTMLElement;
-      expect(compiled.querySelectorAll('button').length).toBe(17);
+      expect(compiled.querySelectorAll('button').length).toBe(19);
     });
 
     it('should render display zone', () => {
@@ -64,11 +62,13 @@ describe('CalculatorComponent', () => {
       const numberButtons = htmlDOM.querySelectorAll('button[data-type="number"]');
       const operatorButtons = htmlDOM.querySelectorAll('button[data-type="operator"]');
       const clearButton = htmlDOM.querySelector('button[data-type="clear"]');
+      const isPrimeButton = htmlDOM.querySelector('button[data-type="prime"]');
     
       expect(numberButtons.length).toBe(10);
-      expect(operatorButtons.length).toBe(4);
+      expect(operatorButtons.length).toBe(5);
       expect(clearButton).toBeTruthy();
       expect(deleteButton).toBeTruthy();
+      expect(isPrimeButton).toBeTruthy();
       expect(equalsButton).toBeTruthy();
     });
 
@@ -181,38 +181,6 @@ describe('CalculatorComponent', () => {
   });
 
 
-  describe('Basic operations', () => {
-    //TODO volver a poner cuando se haga llamada al servicio para no tener que mockear
-    it('should call CalculatorService when "=" is clicked', () => {
-      const response = '8';
-      const operation = '5+3';
-      component.operation = operation;
-      //calculatorService.getResult.and.returnValue(of(response));
-      calculatorService.getResult.and.returnValue(response);
-      equalsButton.click();
-      fixture.detectChanges();
-      expect(calculatorService.getResult).toHaveBeenCalledWith(operation);
-      expect(component.operation).toBe(`${operation}=${response}`);
-      expect(display.textContent).toBe(`${operation}=${response}`);
-    });
-
-
-    it('should handle division by 0', () => {
-      component.operation = '30/0';
-      calculatorService.getResult.and.returnValue(NaN);
-      equalsButton.click();
-      fixture.detectChanges();
-      expect(calculatorService.getResult).toHaveBeenCalledWith('30/0');
-      expect(component.operation).toBe(NaN);
-      expect(display.textContent).toBe(NaN);
-    });
-
-
-
-
-  });
-
-
   describe('Allowed reset buttons interactions', () => {
     it('should be allowed to write a number if NaN is on display', () => {
       component.operation = NaN;
@@ -229,4 +197,34 @@ describe('CalculatorComponent', () => {
       expect(display.textContent).toBe('5');
     });
   });
+
+
+    it('should call CalculatorService when "=" is clicked', (done) => {
+      const operator = '+';
+      const num1 = 5;
+      const num2 = 3;
+      const response = '8';
+    
+      component.operation = num1+operator+num2;
+      calculatorService.add.and.returnValue(of(response));
+      equalsButton.click(); 
+      fixture.detectChanges(); 
+    
+      expect(calculatorService.add).toHaveBeenCalledWith(num1, num2);
+      expect(display.textContent).toBe(`${num1}${operator}${num2}=${response}`); 
+      done();
+    });
+
+
+    it('should handle division by 0', () => {
+      const num1 = 30;
+      const num2 = 0;
+      const response = NaN;
+      calculatorService.divide.and.returnValue(of(response));
+      equalsButton.click();
+      fixture.detectChanges();
+      expect(calculatorService.divide).toHaveBeenCalledWith(num1, num2);
+      expect(component.operation).toBe(response);
+      expect(display.textContent).toBe(response);
+    });
 });

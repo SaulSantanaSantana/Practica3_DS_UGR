@@ -113,6 +113,17 @@ h1 {
     background-color: #ad700f;
   }
   
+  /* Botón is prime */
+  button[data-type="prime"] {
+    background-color: #0acf9e;
+  }
+  button[data-type="prime"]:hover {
+    background-color: #0b9673;
+  }
+  button[data-type="prime"]:active {
+    background-color: #0c614c;
+  }
+  
   /* Botón delete */
   button[data-type="delete"] {
     background-color: #e74c3c;
