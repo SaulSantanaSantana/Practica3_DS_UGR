@@ -1,114 +1,150 @@
 import { TestBed } from '@angular/core/testing';
+import { HttpTestingController } from '@angular/common/http/testing';
 import { CalculatorService } from '../app/calculator/service/calculator.service';
-import { provideHttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('CalculatorService', () => {
   let service: CalculatorService;
+  let httpMock: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         CalculatorService,
-        provideHttpClient(),
+        provideHttpClientTesting(),
       ],
     });
+
     service = TestBed.inject(CalculatorService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
-  describe('Initialization', () => {
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+
     it('should be created', () => {
       expect(service).toBeTruthy();
     });
-  });
 
-  describe('Basic operations', () => {
 
-      //TODO volver a poner cuando se haga llamada al servicio para no tener que mockear
-      it('should return the result of an operation', () /* (done) */ => {
-        const operation = '30+5';
-        const expectedResult = '35';
-        let result = service.getResult(operation);
-        expect(result).toBe(expectedResult);
-        //spyOn(service, 'getResult').and.returnValue(of(expectedResult));
+    it('should add two numbers', () => {
+      const num1 = 5;
+      const num2 = 3;
+      const mockResponse = { result: 8 };
 
-        /*service.getResult(operation).subscribe((result) => {
-          expect(result).toBe(expectedResult);
-          done();
-        });*/
+      service.add(num1, num2).subscribe((response) => {
+        expect(response).toEqual(mockResponse);
       });
 
-      //TODO volver a poner cuando se haga llamada al servicio para no tener que mockear
-      it('should return the result of an operation with more than 2 numbers', () /* (done) */ => {
-        const operation = '30+5+5';
-        const expectedResult = '40';
-        let result = service.getResult(operation);
-        expect(result).toBe(expectedResult);
-        //spyOn(service, 'getResult').and.returnValue(of(expectedResult));
+      const req = httpMock.expectOne(`${service['apiUrl']}/add?num1=${num1}&num2=${num2}`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockResponse);
+    });
 
-        /*service.getResult(operation).subscribe((result) => {
-          expect(result).toBe(expectedResult);
-          done();
-        });*/
+    it('should subtract two numbers', () => {
+      const num1 = 10;
+      const num2 = 4;
+      const mockResponse = { result: 6 };
+
+      service.subtract(num1, num2).subscribe((response) => {
+        expect(response).toEqual(mockResponse);
       });
 
-      
+      const req = httpMock.expectOne(`${service['apiUrl']}/subtract?num1=${num1}&num2=${num2}`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockResponse);
+    });
 
-      //TODO volver a poner cuando se haga llamada al servicio para no tener que mockear
-      it('should return the correct result of a division operation', () /* (done) */ => {
-        const operation = '30/5';
-        const expectedResult = '6';
-        let result = service.getResult(operation);
-        expect(result).toBe(expectedResult);
-        //spyOn(service, 'getResult').and.returnValue(of(expectedResult));
+    it('should multiply two numbers', () => {
+      const num1 = 6;
+      const num2 = 7;
+      const mockResponse = { result: 42 };
 
-        /*service.getResult(operation).subscribe((result) => {
-          expect(result).toBe(expectedResult);
-          done();
-        });*/
+      service.multiply(num1, num2).subscribe((response) => {
+        expect(response).toEqual(mockResponse);
       });
 
-      //TODO volver a poner cuando se haga llamada al servicio para no tener que mockear
-      it('should return the correct result of a subtraction operation', () /* (done) */ => {
-        const operation = '30-5';
-        const expectedResult = '25';
-        let result = service.getResult(operation);
-        expect(result).toBe(expectedResult);
-        //spyOn(service, 'getResult').and.returnValue(of(expectedResult));
+      const req = httpMock.expectOne(`${service['apiUrl']}/multiply?num1=${num1}&num2=${num2}`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockResponse);
+    });
 
-        /*service.getResult(operation).subscribe((result) => {
-          expect(result).toBe(expectedResult);
-          done();
-        });*/
+    it('should divide two numbers', () => {
+      const num1 = 20;
+      const num2 = 5;
+      const mockResponse = { result: 4 };
+
+      service.divide(num1, num2).subscribe((response) => {
+        expect(response).toEqual(mockResponse);
       });
 
-      //TODO volver a poner cuando se haga llamada al servicio para no tener que mockear
-      it('should return the correct result of a multiplication operation', () /* (done) */ => {
-        const operation = '6x5';
-        const expectedResult = '30';
-        let result = service.getResult(operation);
-        expect(result).toBe(expectedResult);
-        //spyOn(service, 'getResult').and.returnValue(of(expectedResult));
+      const req = httpMock.expectOne(`${service['apiUrl']}/divide?num1=${num1}&num2=${num2}`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockResponse);
+    });
 
-        /*service.getResult(operation).subscribe((result) => {
-          expect(result).toBe(expectedResult);
-          done();
-        });*/
-      });
-      
-      //TODO volver a poner cuando se haga llamada al servicio para no tener que mockear
-      it('should handle division by 0',() /* (done) */ => {
-        const operation = '30/0';
-        const expectedResult = 'NaN';
-        let result = service.getResult(operation);
-        expect(result).toBe(expectedResult);
-        //spyOn(service, 'getResult').and.returnValue(of(expectedResult));
+    it('should perform integer division', () => {
+      const num1 = 22;
+      const num2 = 7;
+      const mockResponse = { result: 3 };
 
-        /* service.getResult(operation).subscribe((result) => {
-          expect(result).toBe(expectedResult);
-          done();
-        });*/
+      service.integerDivide(num1, num2).subscribe((response) => {
+        expect(response).toEqual(mockResponse);
       });
 
-  });
+      const req = httpMock.expectOne(`${service['apiUrl']}/integer_divide?num1=${num1}&num2=${num2}`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockResponse);
+    });
+
+    it('should handle the division by zero', () => {
+      const num1 = 30;
+      const num2 = 0;
+      const mockError = {
+        error: { error: 'Cannot divide by zero.' },
+        status: 400,
+        statusText: 'Bad Request',
+      };
+    
+      service.divide(num1, num2).subscribe({
+        next: () => {
+          fail('Expected an error, but the request succeeded');
+        },
+        error: (error) => {
+          expect(error.status).toBe(400);
+          expect(error.error.error).toBe('Cannot divide by zero.');
+        },
+      });
+    
+      const req = httpMock.expectOne(`${service['apiUrl']}/divide?num1=${num1}&num2=${num2}`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockError.error, { status: mockError.status, statusText: mockError.statusText });
+    });
+
+
+    it('should check if a number is prime', () => {
+      const testNumber = 7;
+      const mockResponse = { isPrime: true };
+
+      service.isPrime(testNumber).subscribe((response) => {
+        expect(response).toEqual(mockResponse); 
+      });
+
+      const req = httpMock.expectOne(`${service['apiUrl']}/is_prime?number=${testNumber}`);
+      expect(req.request.method).toBe('GET'); 
+      req.flush(mockResponse);
+    });
+
+    it('should calculate the square root', () => {
+      const testNumber = 16;
+      const mockResponse = { squareRoot: 4 };
+      service.squareRoot(testNumber).subscribe((response) => {
+        expect(response).toEqual(mockResponse);
+      });
+      const req = httpMock.expectOne(`${service['apiUrl']}/square_root?number=${testNumber}`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockResponse);
+    });
 });

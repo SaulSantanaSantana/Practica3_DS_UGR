@@ -5,7 +5,7 @@ import os
 
 app = Flask(__name__)
 
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}})
 
 # Función para verificar si un número es primo
 def is_prime(n):
@@ -75,7 +75,7 @@ def integer_divide():
         return jsonify({"error": "Cannot divide by zero."}), 400
     result = num1 // num2
     return jsonify({"num1": num1, "num2": num2, "integer_quotient": result})
-
+    
 if __name__ == '__main__':
     debug_mode = os.getenv('FLASK_DEBUG', 'false').lower() == 'true'
     app.run(debug=debug_mode)

@@ -168,7 +168,13 @@ describe('CalculatorComponent', () => {
       additionButton.click();
       fixture.detectChanges();
       expect(display.textContent).toBe(component.operation);
-  
+    });
+
+    it('shouldnt be allowed to enter an operator if true is on display', () => {
+      component.operation = "30+5=35";
+      additionButton.click();
+      fixture.detectChanges();
+      expect(display.textContent).toBe('30+5=35');
     });
 
     it('shouldnt be allowed to enter an operator if equals is on display', () => {
@@ -177,6 +183,20 @@ describe('CalculatorComponent', () => {
       fixture.detectChanges();
       expect(display.textContent).toBe('30+5=35');
   
+    });
+
+    it('shouldnt be allowed to enter an operator if PRIME is on display', () => {
+      component.operation = "PRIME";
+      additionButton.click();
+      fixture.detectChanges();
+      expect(display.textContent).toBe('PRIME');
+    });
+
+    it('shouldnt be allowed to enter an operator if NOT PRIME is on display', () => {
+      component.operation = "NOT PRIME";
+      additionButton.click();
+      fixture.detectChanges();
+      expect(display.textContent).toBe('NOT PRIME');
     });
   });
 
@@ -192,6 +212,20 @@ describe('CalculatorComponent', () => {
 
     it('should be allowed to write a number if equals is on display', () => {
       component.operation = "30+5=35";
+      htmlDOM.querySelector('button[data-num="5"]').click();
+      fixture.detectChanges();
+      expect(display.textContent).toBe('5');
+    });
+
+    it('should be allowed to write a number if PRIME is on display', () => {
+      component.operation = "PRIME";
+      htmlDOM.querySelector('button[data-num="5"]').click();
+      fixture.detectChanges();
+      expect(display.textContent).toBe('5');
+    });
+
+    it('should be allowed to write a number if NOT PRIME is on display', () => {
+      component.operation = "NOT PRIME";
       htmlDOM.querySelector('button[data-num="5"]').click();
       fixture.detectChanges();
       expect(display.textContent).toBe('5');
