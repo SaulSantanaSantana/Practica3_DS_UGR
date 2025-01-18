@@ -15,8 +15,9 @@
       </button>
     </div>
     <div class="operators">
-      <button *ngFor="let op of operators" (click)="onOperatorClick(op)"  [disabled]="textOnDisplay" [attr.data-op]="op" data-type="operator">
-        {{ op }}
+      <button *ngFor="let op of operators" (click)="onOperatorClick(op)"  [disabled]="textOnDisplay || (!currentValue && !firstOperand) || selectedOperator" 
+      [attr.data-type]="op.single ? 'single-num-operator' : 'double-num-operator'" [attr.data-op]="op.operator">
+        {{ op.operator }}
       </button>
       <button (click)="onEqualClick()" data-type="equals"> = </button>
     </div>

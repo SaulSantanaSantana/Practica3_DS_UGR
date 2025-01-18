@@ -164,15 +164,15 @@ h1 {
     gap: 8px;
   }
   
-  button[data-type="operator"] {
+  button[data-type="single-num-operator"], button[data-type="double-num-operator"] {
     background-color: #2ecc71;
   }
   
-  button[data-type="operator"]:hover {
+  button[data-type="single-num-operator"]:hover, button[data-type="double-num-operator"]:hover {
     background-color: #27ae60;
   }
   
-  button[data-type="operator"]:active {
+  button[data-type="single-num-operator"]:active, button[data-type="double-num-operator"]:active {
     background-color: #1c914d;
   }
   

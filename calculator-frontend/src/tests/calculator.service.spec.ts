@@ -28,7 +28,7 @@ describe('CalculatorService', () => {
   });
 
   describe('Basic operations', () => {
-    it('should add two numbers', () => {
+    it('should do the addition operation', () => {
       const num1 = 5;
       const num2 = 3;
       const mockResponse = { sum: 8 };
@@ -42,7 +42,7 @@ describe('CalculatorService', () => {
       req.flush(mockResponse);
     });
 
-    it('should subtract two numbers', () => {
+    it('should do the subtraction operation', () => {
       const num1 = 10;
       const num2 = 4;
       const mockResponse = { difference: 6 };
@@ -56,7 +56,7 @@ describe('CalculatorService', () => {
       req.flush(mockResponse);
     });
 
-    it('should multiply two numbers', () => {
+    it('should do the multiply operation', () => {
       const num1 = 6;
       const num2 = 7;
       const mockResponse = { product: 42 };
@@ -70,7 +70,7 @@ describe('CalculatorService', () => {
       req.flush(mockResponse);
     });
 
-    it('should divide two numbers', () => {
+    it('should do the division operation', () => {
       const num1 = 20;
       const num2 = 5;
       const mockResponse = { quotient: 4 };
@@ -84,7 +84,7 @@ describe('CalculatorService', () => {
       req.flush(mockResponse);
     });
 
-    it('should perform integer division', () => {
+    it('should do the integer division operation', () => {
       const num1 = 22;
       const num2 = 7;
       const mockResponse = { integer_quotient: 3 };
@@ -114,7 +114,7 @@ describe('CalculatorService', () => {
       req.flush(mockResponse);
     });
   
-    it('should calculate the square root', () => {
+    it('should do the square root operation', () => {
       const testNumber = 16;
       const mockResponse = { squareRoot: 4 };
   

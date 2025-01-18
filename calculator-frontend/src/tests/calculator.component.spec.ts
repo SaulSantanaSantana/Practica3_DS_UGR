@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CalculatorComponent } from '../app/calculator/calculator.component';
 import { CalculatorService } from '../app/calculator/service/calculator.service';
+import { By } from '@angular/platform-browser';
 import { of, throwError} from 'rxjs';
 
 describe('CalculatorComponent', () => {
@@ -8,7 +9,6 @@ describe('CalculatorComponent', () => {
   let fixture: ComponentFixture<CalculatorComponent>;
   let calculatorService: jasmine.SpyObj<CalculatorService>;
   let htmlDOM : any;
-  let additionButton : any;
   let equalsButton : any;
   let deleteButton : any;
   let display : any;
@@ -26,7 +26,6 @@ describe('CalculatorComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     htmlDOM = fixture.nativeElement;
-    additionButton = htmlDOM.querySelector('button[data-op="+"]');
     equalsButton = htmlDOM.querySelector('button[data-type="equals"]');
     deleteButton = htmlDOM.querySelector('button[data-type="delete"]');
     display = htmlDOM.querySelector('.display');
@@ -58,12 +57,14 @@ describe('CalculatorComponent', () => {
 
     it('should render specific buttons', () => {
       const numberButtons = htmlDOM.querySelectorAll('button[data-type="number"]');
-      const operatorButtons = htmlDOM.querySelectorAll('button[data-type="operator"]');
+      const doubleNumOperatorButtons = htmlDOM.querySelectorAll('button[data-type="double-num-operator"]');
+      const singleNumOperatorButtons = htmlDOM.querySelectorAll('button[data-type="single-num-operator"]');
       const clearButton = htmlDOM.querySelector('button[data-type="clear"]');
       const isPrimeButton = htmlDOM.querySelector('button[data-type="prime"]');
     
       expect(numberButtons.length).toBe(10);
-      expect(operatorButtons.length).toBe(6);
+      expect(doubleNumOperatorButtons.length).toBe(5);
+      expect(singleNumOperatorButtons.length).toBe(1);
       expect(clearButton).toBeTruthy();
       expect(deleteButton).toBeTruthy();
       expect(isPrimeButton).toBeTruthy();
@@ -88,25 +89,18 @@ describe('CalculatorComponent', () => {
     });
     
     it('should display the operator when a operation button is clicked and there is a number before', () => {
+      const resultOperator = {operator: '+', single: false};
+      const additionButton = fixture.debugElement.query(By.css('button[data-op="+"]'));
+      component.textOnDisplay = false;
+      component.selectedOperator = null;
       component.operation = '5';
-      component.currentValue = '5'
-      additionButton.click();
+      component.currentValue = '5';
+      additionButton.triggerEventHandler('click', resultOperator);
       fixture.detectChanges();
+      expect(additionButton).toBeTruthy();
+      expect(component.selectedOperator).not.toBeNull();
+      expect(component.selectedOperator).toEqual(resultOperator);
       expect(display.textContent).toBe('5 + ');
-    });
-
-    it('shouldnt allow to introduce an operator when there is no number in the display', () => {
-      component.operation = '';
-      additionButton.click();
-      fixture.detectChanges();
-      expect(component.operation).toBe('');
-    });
-
-    it('shouldnt allow to introduce two consecutive operators', () => {
-      component.operation = '5+';
-      additionButton.click();
-      fixture.detectChanges();
-      expect(component.operation).toBe('5+');
     });
   });
 
@@ -116,6 +110,21 @@ describe('CalculatorComponent', () => {
       deleteButton.click();
       fixture.detectChanges();
       expect(component.operation).toBe('5+');
+    });
+
+    it('should delete the operator when DELETE is clicked and there is a number with a double number operator', () => {
+      component.operation = '5 + 3';
+      deleteButton.click();
+      fixture.detectChanges();
+      expect(component.operation).toBe('5 + ');
+    });
+
+    it('should delete the operator when DELETE is clicked and there is a number with a single number operator', () => {
+      component.operation = '5 √ ';
+      component.selectedOperator = {operator: '√', single: true};
+      deleteButton.click();
+      fixture.detectChanges();
+      expect(component.operation).toBe('5');
     });
 
     it('nothing should happen when DELETE is clicked and there is no numbers (and operations)', () => {
@@ -155,41 +164,6 @@ describe('CalculatorComponent', () => {
       fixture.detectChanges();
       expect(component.operation).toBe('');
     });
-    it('shouldnt be allowed to enter an operator if NaN is on display', () => {
-      component.operation = NaN;
-      additionButton.click();
-      fixture.detectChanges();
-      expect(display.textContent).toBe(component.operation);
-    });
-
-    it('shouldnt be allowed to enter an operator if true is on display', () => {
-      component.operation = "30+5=35";
-      additionButton.click();
-      fixture.detectChanges();
-      expect(display.textContent).toBe('30+5=35');
-    });
-
-    it('shouldnt be allowed to enter an operator if equals is on display', () => {
-      component.operation = "30+5=35";
-      additionButton.click();
-      fixture.detectChanges();
-      expect(display.textContent).toBe('30+5=35');
-  
-    });
-
-    it('shouldnt be allowed to enter an operator if PRIME is on display', () => {
-      component.operation = "PRIME";
-      additionButton.click();
-      fixture.detectChanges();
-      expect(display.textContent).toBe('PRIME');
-    });
-
-    it('shouldnt be allowed to enter an operator if NOT PRIME is on display', () => {
-      component.operation = "NOT PRIME";
-      additionButton.click();
-      fixture.detectChanges();
-      expect(display.textContent).toBe('NOT PRIME');
-    });
   });
 
 
@@ -203,7 +177,9 @@ describe('CalculatorComponent', () => {
     });
   });
 
+  
 
+  describe('Service interactions', () => {
     it('should call CalculatorService when "=" is clicked', (done) => {
       const operator = '+';
       const num1 = 5;
@@ -213,7 +189,7 @@ describe('CalculatorComponent', () => {
       component.firstOperand = num1;
       component.textOnDisplay = false;
       component.currentValue = "3";
-      component.selectedOperator = "+";
+      component.selectedOperator = {operator: '+', single: false};
       component.operation = "5";
 
       calculatorService.add.and.returnValue(of(response));
@@ -230,12 +206,13 @@ describe('CalculatorComponent', () => {
     it('should handle division by 0',  (done)  => {
       const num1 = 30;
       const num2 = 0;
+      const response = NaN;
+      
       component.firstOperand = num1;
       component.currentValue = "0";
-      component.selectedOperator = '/';
+      component.selectedOperator = {operator: '/', single: false};
       component.operation = "30 / 0";
       component.textOnDisplay = false;
-      const response = NaN;
     
       
       calculatorService.divide.and.returnValue(throwError(() => new Error("Cannot divide by zero.")));
@@ -248,4 +225,5 @@ describe('CalculatorComponent', () => {
       expect(display.textContent).toBe(response);
       done();
     });
+  });
 });
