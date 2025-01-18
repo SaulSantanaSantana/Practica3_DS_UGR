@@ -24,7 +24,6 @@ export class CalculatorComponent {
 
   // Manejo del clic en un número
   onNumberClick(num: number): void {
-    debugger;
     if(this.textOnDisplay) { this.resetCalculation();}
     this.currentValue += num.toString();
     this.operation += num.toString();
@@ -32,7 +31,6 @@ export class CalculatorComponent {
 
   // Manejo del clic en un operador
   onOperatorClick(op: string): void {
-    debugger;
     if(this.textOnDisplay) this.resetCalculation();
     else {
       if (!this.firstOperand && this.currentValue) {
@@ -53,7 +51,6 @@ export class CalculatorComponent {
   // Manejo del clic en "="
   onEqualClick(): void {    
     console.log("Entra en onEqualClick con los valores this.currentValue, this.firstOperand y this.selectedOperator: ", this.currentValue, this.firstOperand, this.selectedOperator);
-    debugger;
     if (this.firstOperand !== null && this.selectedOperator) {
       this.secondOperand = parseFloat(this.currentValue);
       this.executeOperation();
@@ -62,7 +59,6 @@ export class CalculatorComponent {
 
   // Ejecutar la operación
   private executeOperation(): void {
-    debugger;
     console.log("Entra en executeOperation con los valores this.selectedOperator, this.firstOperand y this.secondOperand: ",this.selectedOperator, this.firstOperand, this.secondOperand);
     if (
       !this.selectedOperator ||
@@ -114,7 +110,6 @@ export class CalculatorComponent {
         });
         break;
       case this.squareRootSimbol:
-        debugger;
         this.calculatorService
           .squareRoot(this.firstOperand)
           .subscribe({
