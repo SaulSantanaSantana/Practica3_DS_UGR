@@ -71,8 +71,12 @@ export class CalculatorComponent {
           .add(this.firstOperand, this.secondOperand)
           .pipe(
             finalize(() => this.resetCalculation())
-          ).subscribe((res) => {
-            this.operation = res.sum.toString();
+          ).subscribe({
+            next: (res) => this.operation = res.sum.toString(),
+            error: (error) => {
+              this.operation = 'NaN';
+              this.textOnDisplay = true;
+            },
           });
         break;
       case '-':
@@ -80,8 +84,12 @@ export class CalculatorComponent {
           .subtract(this.firstOperand, this.secondOperand)
           .pipe(
             finalize(() => this.resetCalculation())
-          ).subscribe((res) => {
-            this.operation = res.difference.toString();
+          ).subscribe({
+            next: (res) =>this.operation = res.difference.toString(),
+            error: (error) => {
+              this.operation = 'NaN';
+              this.textOnDisplay = true;
+            },
           });
         break;
       case '*':
@@ -89,8 +97,12 @@ export class CalculatorComponent {
           .multiply(this.firstOperand, this.secondOperand)
           .pipe(
             finalize(() => this.resetCalculation())
-          ).subscribe((res) => {
-            this.operation = res.product.toString();
+          ).subscribe({
+            next: (res) => this.operation = res.product.toString(),
+            error: (error) => {
+              this.operation = 'NaN';
+              this.textOnDisplay = true;
+            },
           });
         break;
       case '/':
@@ -114,7 +126,10 @@ export class CalculatorComponent {
             finalize(() => this.resetCalculation())
           ).subscribe({
             next: (res) => this.operation = res.integer_quotient.toString(),
-            error: (error) => this.operation = 'Error: ' + error.error.error,
+            error: (error) => {
+              this.operation = 'NaN';
+              this.textOnDisplay = true;
+            },
         });
         break;
       case '√':
@@ -124,7 +139,10 @@ export class CalculatorComponent {
             finalize(() => this.resetCalculation())
           ).subscribe({
             next: (res) => this.operation = res.square_root.toString(),
-              error: (error) => this.operation = 'Error: ' + error.error.error,
+            error: (error) => {
+              this.operation = 'NaN';
+              this.textOnDisplay = true;
+            },
         });
         break;
     }

@@ -150,6 +150,26 @@ describe('CalculatorService', () => {
     expect(req.request.method).toBe('GET');
     req.flush(mockError.error, { status: mockError.status, statusText: mockError.statusText });
     });
+  
+  it('should handle an error from the backend while doing the square root op eration', () => {
+    const testNumber = 5;
+    const mockResponse = {
+      error: { error: 'error' },
+      status: 400,
+      statusText: 'Bad Request',
+    };
+
+    service.squareRoot(testNumber).subscribe({
+      next: () => fail('Expected an error, but the request succeeded'),
+      error: (error) => {
+        expect(error.status).toBe(400);
+      },
+    });
+
+    const req = httpMock.expectOne(`${service['apiUrl']}/square_root?number=${testNumber}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockResponse, { status: 400, statusText: 'Bad Request' });
+    });
   });
 
 });
