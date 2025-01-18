@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-//import { provideHttpClient } from '@angular/common/http';
 import { CalculatorComponent } from '../app/calculator/calculator.component';
 import { CalculatorService } from '../app/calculator/service/calculator.service';
-import { of } from 'rxjs';
+import { of, throwError} from 'rxjs';
 
 describe('CalculatorComponent', () => {
   let component: CalculatorComponent;
@@ -16,8 +15,7 @@ describe('CalculatorComponent', () => {
   let NaN : string = "NaN";
 
   beforeEach(async () => { 
-    const calculatorServiceSpy = jasmine.createSpyObj('CalculatorService', ['calculate']);
-
+    const calculatorServiceSpy = jasmine.createSpyObj('CalculatorService', ['calculate', 'add', 'divide']);
     await TestBed.configureTestingModule({
       imports: [CalculatorComponent],
       providers: [{ provide: CalculatorService, useValue: calculatorServiceSpy }],
@@ -49,7 +47,7 @@ describe('CalculatorComponent', () => {
 
     it('should render the calculator buttons', () => {
       const compiled = htmlDOM as HTMLElement;
-      expect(compiled.querySelectorAll('button').length).toBe(19);
+      expect(compiled.querySelectorAll('button').length).toBe(20);
     });
 
     it('should render display zone', () => {
@@ -65,7 +63,7 @@ describe('CalculatorComponent', () => {
       const isPrimeButton = htmlDOM.querySelector('button[data-type="prime"]');
     
       expect(numberButtons.length).toBe(10);
-      expect(operatorButtons.length).toBe(5);
+      expect(operatorButtons.length).toBe(6);
       expect(clearButton).toBeTruthy();
       expect(deleteButton).toBeTruthy();
       expect(isPrimeButton).toBeTruthy();
@@ -91,9 +89,10 @@ describe('CalculatorComponent', () => {
     
     it('should display the operator when a operation button is clicked and there is a number before', () => {
       component.operation = '5';
+      component.currentValue = '5'
       additionButton.click();
       fixture.detectChanges();
-      expect(display.textContent).toBe('5+');
+      expect(display.textContent).toBe('5 + ');
     });
 
     it('shouldnt allow to introduce an operator when there is no number in the display', () => {
@@ -124,13 +123,6 @@ describe('CalculatorComponent', () => {
       deleteButton.click();
       fixture.detectChanges();
       expect(component.operation).toBe('');
-    });
-
-    it('nothing should happen when DELETE is clicked and there is a NaN string on the display', () => {
-      component.operation = NaN;
-      deleteButton.click();
-      fixture.detectChanges();
-      expect(component.operation).toBe(NaN);
     });
 
     it('should clear the operation when CLEAR is clicked', () => {
@@ -202,31 +194,10 @@ describe('CalculatorComponent', () => {
 
 
   describe('Allowed reset buttons interactions', () => {
-    it('should be allowed to write a number if NaN is on display', () => {
-      component.operation = NaN;
+    it('should be allowed to write a number if NaN, PRIME or NOT PRIME are on display', () => {
+      component.textOnDisplay = true;
       const number = htmlDOM.querySelector('button[data-num="5"]');
       number.click();
-      fixture.detectChanges();
-      expect(display.textContent).toBe('5');
-    });
-
-    it('should be allowed to write a number if equals is on display', () => {
-      component.operation = "30+5=35";
-      htmlDOM.querySelector('button[data-num="5"]').click();
-      fixture.detectChanges();
-      expect(display.textContent).toBe('5');
-    });
-
-    it('should be allowed to write a number if PRIME is on display', () => {
-      component.operation = "PRIME";
-      htmlDOM.querySelector('button[data-num="5"]').click();
-      fixture.detectChanges();
-      expect(display.textContent).toBe('5');
-    });
-
-    it('should be allowed to write a number if NOT PRIME is on display', () => {
-      component.operation = "NOT PRIME";
-      htmlDOM.querySelector('button[data-num="5"]').click();
       fixture.detectChanges();
       expect(display.textContent).toBe('5');
     });
@@ -237,28 +208,44 @@ describe('CalculatorComponent', () => {
       const operator = '+';
       const num1 = 5;
       const num2 = 3;
-      const response = '8';
-    
-      component.operation = num1+operator+num2;
+      const response = { sum: 8 };
+
+      component.firstOperand = num1;
+      component.textOnDisplay = false;
+      component.currentValue = "3";
+      component.selectedOperator = "+";
+      component.operation = "5";
+
       calculatorService.add.and.returnValue(of(response));
-      equalsButton.click(); 
-      fixture.detectChanges(); 
-    
+      component.operation = `${num1} ${operator} ${num2}`;
+      equalsButton.click();
+      fixture.detectChanges();
+      console.log('Spy calls:', calculatorService.add.calls.allArgs());
       expect(calculatorService.add).toHaveBeenCalledWith(num1, num2);
-      expect(display.textContent).toBe(`${num1}${operator}${num2}=${response}`); 
+      expect(display.textContent).toBe(response.sum.toString());
       done();
     });
 
 
-    it('should handle division by 0', () => {
+    it('should handle division by 0',  (done)  => {
       const num1 = 30;
       const num2 = 0;
+      component.firstOperand = num1;
+      component.currentValue = "0";
+      component.selectedOperator = '/';
+      component.operation = "30 / 0";
+      component.textOnDisplay = false;
       const response = NaN;
-      calculatorService.divide.and.returnValue(of(response));
+    
+      
+      calculatorService.divide.and.returnValue(throwError(() => new Error("Cannot divide by zero.")));
       equalsButton.click();
       fixture.detectChanges();
+  
       expect(calculatorService.divide).toHaveBeenCalledWith(num1, num2);
+      
       expect(component.operation).toBe(response);
       expect(display.textContent).toBe(response);
+      done();
     });
 });

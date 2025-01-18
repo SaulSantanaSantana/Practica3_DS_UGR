@@ -10,9 +10,9 @@ import { CalculatorService } from './service/calculator.service';
   styleUrls: ['./calculator.component.css'],
 })
 export class CalculatorComponent {
+  readonly squareRootSimbol : string = '√';
   operation = '';
   numbers = [7, 8, 9, 4, 5, 6, 1, 2, 3, 0];
-  squareRootSimbol : string = '√';
   operators = ['+', '-', '*', '/', '//', this.squareRootSimbol];
   currentValue = '';
   firstOperand: number | null = null;
@@ -24,34 +24,36 @@ export class CalculatorComponent {
 
   // Manejo del clic en un número
   onNumberClick(num: number): void {
-    if(this.textOnDisplay) {
-      this.resetCalculation();
-    }
+    debugger;
+    if(this.textOnDisplay) { this.resetCalculation();}
     this.currentValue += num.toString();
     this.operation += num.toString();
   }
 
   // Manejo del clic en un operador
   onOperatorClick(op: string): void {
+    debugger;
     if(this.textOnDisplay) this.resetCalculation();
     else {
       if (!this.firstOperand && this.currentValue) {
+        this.selectedOperator = op;
+        this.firstOperand = parseFloat(this.currentValue);
         if(op === this.squareRootSimbol){
-          this.firstOperand = parseFloat(this.currentValue);
-          this.executeOperation();
+          this.secondOperand = parseFloat(this.currentValue);
+          this.operation = ` ${op} ` + this.operation;
         }
         else {
-          this.firstOperand = parseFloat(this.currentValue);
-          this.selectedOperator = op;
           this.operation += ` ${op} `;
-          this.currentValue = '';
         }
+        this.currentValue = '';
       }
     }
   }
 
   // Manejo del clic en "="
-  onEqualClick(): void {
+  onEqualClick(): void {    
+    console.log("Entra en onEqualClick con los valores this.currentValue, this.firstOperand y this.selectedOperator: ", this.currentValue, this.firstOperand, this.selectedOperator);
+    debugger;
     if (this.firstOperand !== null && this.selectedOperator) {
       this.secondOperand = parseFloat(this.currentValue);
       this.executeOperation();
@@ -60,6 +62,8 @@ export class CalculatorComponent {
 
   // Ejecutar la operación
   private executeOperation(): void {
+    debugger;
+    console.log("Entra en executeOperation con los valores this.selectedOperator, this.firstOperand y this.secondOperand: ",this.selectedOperator, this.firstOperand, this.secondOperand);
     if (
       !this.selectedOperator ||
       this.firstOperand === null ||
@@ -109,7 +113,8 @@ export class CalculatorComponent {
             error: (error) => this.operation = 'Error: ' + error.error.error,
         });
         break;
-      case '√':
+      case this.squareRootSimbol:
+        debugger;
         this.calculatorService
           .squareRoot(this.firstOperand)
           .subscribe({
@@ -144,16 +149,10 @@ export class CalculatorComponent {
 
   // Borrar el último carácter
   onDeleteClick(): void {
-    debugger;
-    if(this.textOnDisplay) {
-      this.operation = '';
-      this.resetCalculation();
-    }
-    else{
       if(this.selectedOperator && this.operation.trim().charAt(this.operation.trim().length-1) === this.selectedOperator) this.selectedOperator = null;
       this.currentValue = this.currentValue.slice(0, -1);
       this.operation = this.operation.slice(0, -1);
-    }
+    
   }
 
   // Resetear cálculo
