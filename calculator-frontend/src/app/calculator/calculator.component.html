@@ -6,7 +6,8 @@
   <div class="buttons">
     <div class="top-buttons">
       <button (click)="onClearClick()" data-type="clear">C</button>
-      <button (click)="onDeleteClick()" data-type="delete">DELETE</button>
+      <button (click)="isPrimeClick()" [disabled]="textOnDisplay" data-type="prime">IS PRIME</button>
+      <button (click)="onDeleteClick()" [disabled]="textOnDisplay" data-type="delete">DELETE</button>
     </div>
     <div class="numbers">
       <button *ngFor="let num of numbers" (click)="onNumberClick(num)" [attr.data-num]="num" data-type="number">
@@ -14,8 +15,9 @@
       </button>
     </div>
     <div class="operators">
-      <button *ngFor="let op of operators" (click)="onOperatorClick(op)" [attr.data-op]="op" data-type="operator">
-        {{ op }}
+      <button *ngFor="let op of operators" (click)="onOperatorClick(op)"  [disabled]="textOnDisplay || (!currentValue && !firstOperand) || selectedOperator" 
+      [attr.data-type]="op.single ? 'single-num-operator' : 'double-num-operator'" [attr.data-op]="op.operator">
+        {{ op.operator }}
       </button>
       <button (click)="onEqualClick()" data-type="equals"> = </button>
     </div>
